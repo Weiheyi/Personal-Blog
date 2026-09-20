@@ -1,0 +1,796 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   AlexYang —— 设计系统
+   登记册:Brand(个人博客 = 长文阅读界面)
+   工作模式:Learn —— 阅读流、节奏、可读的行宽
+   配色意图:暖纸底 + 印章红。中性色向强调色轻微偏移,表面才有"被设计过"的
+             温度,而不是一片死灰。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 设计令牌
+   每个色值先给十六进制回退,再给 OKLCH。老浏览器拿到合理的颜色,
+   现代浏览器拿到感知均匀的色阶。
+   -------------------------------------------------------------------------- */
+:root {
+  /* 表面 —— 暖纸 */
+  --bg:            #fbf9f6;
+  --bg:            oklch(98.2% 0.005 78);
+  --surface:       #ffffff;
+  --surface:       oklch(100% 0 0);
+  --surface-sunk:  #f4f1ec;
+  --surface-sunk:  oklch(96.2% 0.008 78);
+
+  /* 墨色 —— 暖调近黑,不用纯黑 */
+  --ink:           #2f2b27;
+  --ink:           oklch(26% 0.012 62);
+  --ink-body:      #4a443e;
+  --ink-body:      oklch(38% 0.014 62);
+  --ink-muted:     #786f67;
+  --ink-muted:     oklch(54% 0.014 62);
+  --ink-faint:     #a49c93;
+  --ink-faint:     oklch(70% 0.012 62);
+
+  /* 线 */
+  --line:          #e6e0d8;
+  --line:          oklch(90.5% 0.009 74);
+  --line-strong:   #d3cbc1;
+  --line-strong:   oklch(84% 0.012 74);
+
+  /* 强调色 —— 印章红 */
+  --accent:        #b03521;
+  --accent:        oklch(51% 0.165 30);
+  --accent-hover:  #8f2a1a;
+  --accent-hover:  oklch(44% 0.155 30);
+  --accent-soft:   #fbeae5;
+  --accent-soft:   oklch(95% 0.028 32);
+  --accent-ink:    #ffffff;
+
+  /* 字体 —— 中文必须走系统栈:Google Fonts 在国内不可达,
+     中文 Web 字体会额外拖 5-10MB。拉丁部分用衬线体做对比。 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+               "Source Han Sans SC", sans-serif;
+  --font-serif: Georgia, "Times New Roman", "Songti SC", "Source Han Serif SC",
+                "Noto Serif CJK SC", serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
+               "Liberation Mono", Menlo, monospace;
+
+  /* 字阶 —— 相邻级差 ≥1.3,层级才立得住 */
+  --fs-xs:   0.8125rem;
+  --fs-sm:   0.9375rem;
+  --fs-base: 1.0625rem;
+  --fs-md:   1.1875rem;
+  --fs-lg:   1.375rem;
+  --fs-xl:   1.75rem;
+  --fs-2xl:  2.125rem;
+  --fs-3xl:  2.75rem;
+  --fs-display: clamp(2.25rem, 5.5vw, 3.25rem);
+
+  /* 间距 —— 4px 为 1 单位,16px 为段落级,36px 为区块级 */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 36px; --s8: 48px;
+  --s9: 64px; --s10: 96px;
+
+  /* 行宽 —— 正文 60-76ch */
+  --measure: 34rem;
+  --measure-wide: 44rem;
+
+  --radius-sm: 3px;
+  --radius: 6px;
+  --radius-lg: 10px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur: 240ms;
+}
+
+/* 深色 —— 暖调深色,不是纯黑。浅色文字在深底上光学更细,需要补偿 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:           #232120;
+    --bg:           oklch(19.5% 0.006 62);
+    --surface:      #2b2826;
+    --surface:      oklch(23% 0.007 62);
+    --surface-sunk: #1c1a19;
+    --surface-sunk: oklch(16% 0.006 62);
+
+    --ink:          #ede9e4;
+    --ink:          oklch(93% 0.006 78);
+    --ink-body:     #cfc8c0;
+    --ink-body:     oklch(83% 0.009 78);
+    --ink-muted:    #9c948b;
+    --ink-muted:    oklch(64% 0.011 70);
+    --ink-faint:    #736c65;
+    --ink-faint:    oklch(48% 0.011 70);
+
+    --line:         #3a3633;
+    --line:         oklch(31% 0.007 62);
+    --line-strong:  #4a4541;
+    --line-strong:  oklch(38% 0.008 62);
+
+    --accent:       #e8735a;
+    --accent:       oklch(68% 0.155 32);
+    --accent-hover: #f08a73;
+    --accent-hover: oklch(74% 0.145 32);
+    --accent-soft:  #3b2621;
+    --accent-soft:  oklch(27% 0.045 30);
+    --accent-ink:   #1a1210;
+
+    --radius-sm: 3px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. 基础
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-body);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.75;
+  /* 浅色文字在深底上更细,补一点字距 */
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-color-scheme: dark) {
+  body { letter-spacing: 0.011em; line-height: 1.82; }
+}
+
+h1, h2, h3, h4 {
+  color: var(--ink);
+  line-height: 1.28;
+  font-weight: 650;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; }
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+a:hover { color: var(--accent-hover); }
+
+img { max-width: 100%; height: auto; display: block; }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: var(--s9) 0;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* 焦点 —— 全站统一,虚线以示"这是焦点"而非"这是选中" */
+:focus-visible {
+  outline: 2px dashed var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+/* 鼠标点击不显示焦点环 */
+:focus:not(:focus-visible) { outline: none; }
+
+/* 跳转到正文 —— 键盘用户的第一个 Tab */
+.skip-link {
+  position: absolute;
+  left: var(--s4);
+  top: -100px;
+  z-index: 100;
+  padding: var(--s3) var(--s5);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  transition: top var(--dur) var(--ease-out);
+}
+.skip-link:focus { top: var(--s4); color: var(--accent-ink); }
+
+/* 仅屏幕阅读器可见 */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. 骨架
+   -------------------------------------------------------------------------- */
+.shell {
+  max-width: var(--measure-wide);
+  margin: 0 auto;
+  padding: 0 var(--s5);
+}
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: saturate(1.4) blur(8px);
+}
+
+.site-header__inner {
+  max-width: var(--measure-wide);
+  margin: 0 auto;
+  padding: var(--s4) var(--s5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s5);
+  min-height: 64px;
+}
+
+.wordmark {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.015em;
+  /* 触控目标撑到 44px */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.wordmark:hover { color: var(--accent); }
+.wordmark__seal {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin-right: var(--s2);
+  transform: translateY(-1px);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  font-size: var(--fs-sm);
+}
+.site-nav a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  position: relative;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="page"] { color: var(--ink); }
+.site-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 8px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+main { display: block; }
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  margin-top: var(--s10);
+  padding: var(--s7) 0 var(--s9);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+.site-footer__inner {
+  max-width: var(--measure-wide);
+  margin: 0 auto;
+  padding: 0 var(--s5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s4) var(--s6);
+  justify-content: space-between;
+}
+.site-footer a { color: var(--ink-muted); }
+.site-footer a:hover { color: var(--accent); }
+
+/* --------------------------------------------------------------------------
+   4. 首页 —— 导语 + 文章索引
+   Learn 模式:先给一句"这里是什么",再给有条理的阅读路径。
+   列表用分隔线,不用卡片 —— 卡片的形状是在替内容做决定。
+   -------------------------------------------------------------------------- */
+.lede { padding: var(--s9) 0 var(--s8); }
+
+.lede__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: var(--s5);
+  max-width: 20ch;
+}
+
+.lede__text {
+  max-width: var(--measure);
+  font-size: var(--fs-md);
+  color: var(--ink-body);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding-bottom: var(--s3);
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: var(--s2);
+}
+.section-head__title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.section-head__count {
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 文章索引 */
+.post-list { list-style: none; margin: 0 0 var(--s10); padding: 0; }
+
+.post-item { border-bottom: 1px solid var(--line); }
+
+.post-item__link {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: var(--s5);
+  padding: var(--s5) var(--s3);
+  margin: 0 calc(var(--s3) * -1);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.post-item__link:hover { background: var(--surface-sunk); }
+
+.post-item__date {
+  font-size: var(--fs-sm);
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  padding-top: 3px;
+  white-space: nowrap;
+}
+
+.post-item__title {
+  font-size: var(--fs-lg);
+  font-weight: 650;
+  color: var(--ink);
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+.post-item__link:hover .post-item__title { color: var(--accent); }
+
+.post-item__summary {
+  margin-top: var(--s2);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+  line-height: 1.7;
+  max-width: var(--measure);
+}
+
+.post-item__meta {
+  margin-top: var(--s3);
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s4);
+}
+.post-item__tag {
+  color: var(--ink-muted);
+}
+.post-item__tag::before { content: "#"; color: var(--ink-faint); }
+
+/* --------------------------------------------------------------------------
+   5. 文章页
+   -------------------------------------------------------------------------- */
+.article { padding-top: var(--s9); }
+
+.article__header { margin-bottom: var(--s7); }
+
+.article__eyebrow {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: var(--s4);
+}
+
+.article__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-3xl);
+  line-height: 1.15;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  margin-bottom: var(--s5);
+  max-width: var(--measure-wide);
+}
+
+.article__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3) var(--s5);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+  padding-bottom: var(--s5);
+  border-bottom: 1px solid var(--line);
+}
+.article__meta span { display: inline-flex; align-items: center; gap: var(--s2); }
+.article__meta .dot { color: var(--ink-faint); }
+
+/* 正文排版 */
+.prose {
+  max-width: var(--measure);
+  font-size: var(--fs-base);
+  line-height: 1.85;
+  color: var(--ink-body);
+}
+.prose > * + * { margin-top: var(--s5); }
+
+.prose h2 {
+  font-size: var(--fs-xl);
+  margin-top: var(--s9);
+  margin-bottom: var(--s4);
+  letter-spacing: -0.018em;
+  scroll-margin-top: 88px;
+}
+.prose h3 {
+  font-size: var(--fs-lg);
+  margin-top: var(--s8);
+  margin-bottom: var(--s3);
+  letter-spacing: -0.012em;
+  scroll-margin-top: 88px;
+}
+.prose h2 + *, .prose h3 + * { margin-top: 0; }
+
+.prose strong { color: var(--ink); font-weight: 650; }
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--accent) 35%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prose a:hover { text-decoration-color: currentColor; }
+
+.prose ul, .prose ol { padding-left: 1.4em; }
+.prose li + li { margin-top: var(--s2); }
+.prose li::marker { color: var(--ink-faint); }
+
+.prose blockquote {
+  margin: var(--s6) 0;
+  padding: var(--s1) 0 var(--s1) var(--s5);
+  border-left: 3px solid var(--accent);
+  color: var(--ink-muted);
+  font-style: normal;
+}
+.prose blockquote p + p { margin-top: var(--s3); }
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--surface-sunk);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.12em 0.38em;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.prose pre {
+  background: var(--surface-sunk);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s5);
+  overflow-x: auto;
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  margin: var(--s6) 0;
+}
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose img {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  margin: var(--s6) 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  margin: var(--s6) 0;
+  display: block;
+  overflow-x: auto;
+}
+.prose th, .prose td {
+  border-bottom: 1px solid var(--line);
+  padding: var(--s3) var(--s4);
+  text-align: left;
+}
+.prose th {
+  color: var(--ink);
+  font-weight: 650;
+  border-bottom-width: 2px;
+  border-bottom-color: var(--line-strong);
+  white-space: nowrap;
+}
+
+/* 文章底部翻页 */
+.article__foot {
+  max-width: var(--measure);
+  margin-top: var(--s9);
+  padding-top: var(--s6);
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s5);
+  font-size: var(--fs-sm);
+}
+.article__foot a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  max-width: 45%;
+}
+.article__foot a:hover { color: var(--accent); }
+.article__foot a span:first-child {
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+}
+.article__foot a:last-child { text-align: right; margin-left: auto; }
+
+/* --------------------------------------------------------------------------
+   6. 关于页
+   -------------------------------------------------------------------------- */
+.about { padding-top: var(--s9); }
+.about__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
+  letter-spacing: -0.025em;
+  margin-bottom: var(--s7);
+}
+.about__body { max-width: var(--measure); }
+.about__body > * + * { margin-top: var(--s5); }
+.about__body h2 {
+  font-size: var(--fs-lg);
+  margin-top: var(--s8);
+  margin-bottom: var(--s3);
+}
+
+.fact-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s5) 0;
+  border-top: 1px solid var(--line);
+}
+.fact-list li {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--s4);
+  padding: var(--s4) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+}
+.fact-list dt, .fact-list .fact-key {
+  color: var(--ink-faint);
+  margin: 0;
+}
+.fact-list .fact-val { color: var(--ink-body); margin: 0; }
+
+/* --------------------------------------------------------------------------
+   7. 状态:加载 / 空 / 错误
+   每个状态都是一等公民,不是事后补的。
+   -------------------------------------------------------------------------- */
+
+/* 加载骨架 */
+.skeleton { list-style: none; margin: 0; padding: 0; }
+.skeleton li {
+  border-bottom: 1px solid var(--line);
+  padding: var(--s5) 0;
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: var(--s5);
+}
+.sk-bar {
+  background: var(--surface-sunk);
+  border-radius: var(--radius-sm);
+  height: 0.7em;
+  animation: sk-pulse 1.5s ease-in-out infinite;
+}
+.sk-bar--date { width: 5rem; }
+.sk-bar--title { width: 72%; height: 0.95em; }
+.sk-bar--summary { width: 92%; margin-top: var(--s3); }
+.sk-bar--summary2 { width: 64%; margin-top: var(--s2); }
+
+@keyframes sk-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+/* 空状态 —— 说清楚这里该有什么、为什么值得填 */
+.empty {
+  padding: var(--s9) 0;
+  max-width: var(--measure);
+  border-bottom: 1px solid var(--line);
+}
+.empty__title {
+  font-size: var(--fs-lg);
+  color: var(--ink);
+  margin-bottom: var(--s3);
+}
+.empty__text { color: var(--ink-muted); font-size: var(--fs-sm); }
+.empty__hint {
+  margin-top: var(--s5);
+  padding: var(--s4);
+  background: var(--surface-sunk);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+.empty__hint code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--ink);
+}
+
+/* 错误状态 —— 说清哪里断了、下一步做什么 */
+.error-box {
+  margin: var(--s9) 0;
+  padding: var(--s6);
+  max-width: var(--measure);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
+  border-radius: var(--radius);
+}
+.error-box__title {
+  font-size: var(--fs-md);
+  color: var(--ink);
+  margin-bottom: var(--s2);
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.error-box__text { font-size: var(--fs-sm); color: var(--ink-body); }
+.error-box__text + .error-box__text { margin-top: var(--s3); }
+
+/* 404 */
+.notfound {
+  padding: var(--s10) 0;
+  max-width: var(--measure);
+}
+.notfound__code {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
+  color: var(--ink-faint);
+  line-height: 1;
+  margin-bottom: var(--s4);
+}
+.notfound__title {
+  font-size: var(--fs-xl);
+  color: var(--ink);
+  margin-bottom: var(--s4);
+}
+.notfound__text { color: var(--ink-muted); margin-bottom: var(--s6); }
+
+/* --------------------------------------------------------------------------
+   8. 动效
+   只在"能说明状态变化"的地方出现。全部走 transform / opacity,
+   并尊重 prefers-reduced-motion。
+   -------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: reveal-in 460ms var(--ease-out) forwards;
+}
+@keyframes reveal-in {
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .sk-bar { animation: none; opacity: 0.6; }
+}
+
+/* --------------------------------------------------------------------------
+   9. 响应式 —— 改变编排,不只是压缩
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  :root {
+    --fs-base: 1.0625rem;
+    --fs-3xl: 2.125rem;
+  }
+  .lede { padding: var(--s8) 0 var(--s7); }
+  .article { padding-top: var(--s8); }
+
+  /* 文章索引从两栏改成堆叠,日期移到标题上方 */
+  .post-item__link {
+    grid-template-columns: 1fr;
+    gap: var(--s2);
+    padding: var(--s5) var(--s3);
+  }
+  .post-item__date { padding-top: 0; order: -1; }
+  .skeleton li { grid-template-columns: 1fr; gap: var(--s2); }
+
+  .fact-list li { grid-template-columns: 1fr; gap: var(--s1); }
+
+  .article__foot { flex-direction: column; }
+  .article__foot a { max-width: none; }
+  .article__foot a:last-child { text-align: left; margin-left: 0; }
+
+  .site-header__inner { padding: var(--s3) var(--s5); min-height: 56px; }
+}
+
+@media (max-width: 400px) {
+  .shell, .site-header__inner, .site-footer__inner { padding-inline: var(--s4); }
+  .site-nav { gap: var(--s4); }
+}
+
+/* 大屏:正文保持行宽,外层留白加大 */
+@media (min-width: 1100px) {
+  :root { --measure-wide: 48rem; }
+}
+
+/* --------------------------------------------------------------------------
+   10. 打印 —— 博客真正的用途之一:存成 PDF
+   -------------------------------------------------------------------------- */
+@media print {
+  .site-header, .site-footer, .article__foot, .skip-link { display: none; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .prose { max-width: none; }
+  .prose a { color: #000; text-decoration: underline; }
+  .prose pre { border: 1px solid #ccc; }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AlexYang</title>
+<meta name="description" content="AlexYang 的个人博客：记录做过的事、踩过的坑，和还没想清楚的问题。">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AlexYang">
+<meta property="og:description" content="记录做过的事、踩过的坑，和还没想清楚的问题。">
+<meta property="og:url" content="https://alexyang.top/">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b03521'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='19' font-weight='700' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+</head>
+<body data-page="index">
+
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="index.html">
+      <span class="wordmark__seal" aria-hidden="true"></span>AlexYang
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html" aria-current="page">文章</a>
+      <a href="about.html">关于</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="shell">
+
+    <section class="lede">
+      <h1 class="lede__title">把折腾过的东西写下来</h1>
+      <p class="lede__text">
+        我是 AlexYang。这里记录我做过的事、踩过的坑，还有没想清楚的问题。
+        不追热点，写得慢，但尽量写清楚。
+      </p>
+    </section>
+
+    <h2 class="section-head">
+      <span class="section-head__title">文章</span>
+      <span class="section-head__count" id="post-count">加载中</span>
+    </h2>
+
+    <!-- 加载态：真实存在于 DOM 中，JS 拿到数据后整体替换 -->
+    <ul class="skeleton" id="post-list" aria-busy="true" aria-label="文章列表加载中">
+      <li>
+        <span class="sk-bar sk-bar--date"></span>
+        <span>
+          <span class="sk-bar sk-bar--title" style="display:block"></span>
+          <span class="sk-bar sk-bar--summary" style="display:block"></span>
+          <span class="sk-bar sk-bar--summary2" style="display:block"></span>
+        </span>
+      </li>
+      <li>
+        <span class="sk-bar sk-bar--date"></span>
+        <span>
+          <span class="sk-bar sk-bar--title" style="display:block;width:58%"></span>
+          <span class="sk-bar sk-bar--summary" style="display:block;width:80%"></span>
+        </span>
+      </li>
+      <li>
+        <span class="sk-bar sk-bar--date"></span>
+        <span>
+          <span class="sk-bar sk-bar--title" style="display:block;width:66%"></span>
+          <span class="sk-bar sk-bar--summary" style="display:block;width:88%"></span>
+          <span class="sk-bar sk-bar--summary2" style="display:block;width:52%"></span>
+        </span>
+      </li>
+    </ul>
+
+    <noscript>
+      <div class="error-box">
+        <p class="error-box__title">需要开启 JavaScript</p>
+        <p class="error-box__text">文章列表由浏览器在本地渲染。开启 JavaScript 后刷新即可。</p>
+        <p class="error-box__text">也可以直接访问 <a href="about.html">关于</a> 页面。</p>
+      </div>
+    </noscript>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>© 2026 AlexYang</span>
+    <span><a href="about.html">关于</a></span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>关于 · AlexYang</title>
+<meta name="description" content="关于 AlexYang，以及这个博客是怎么搭起来的。">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b03521'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='19' font-weight='700' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+</head>
+<body data-page="about">
+
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="index.html">
+      <span class="wordmark__seal" aria-hidden="true"></span>AlexYang
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">文章</a>
+      <a href="about.html" aria-current="page">关于</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="shell">
+    <section class="about">
+      <h1 class="about__title">关于</h1>
+
+      <div class="about__body">
+        <p>
+          我是 AlexYang。这个博客是我的笔记本，不是媒体。
+        </p>
+        <p>
+          写下来的东西，大多是我自己先没搞明白、后来搞明白了的，
+          或者是绕了远路才走通的。如果你也正好卡在某个地方，
+          希望这里能帮你省一点时间。
+        </p>
+        <p>
+          不追热点，写得慢。写不出清楚的东西时，就不写。
+        </p>
+
+        <h2>在做什么</h2>
+        <ul class="fact-list">
+          <li>
+            <span class="fact-key">在写</span>
+            <span class="fact-val">技术笔记、踩坑记录、偶尔一些没想清楚的想法</span>
+          </li>
+          <li>
+            <span class="fact-key">在折腾</span>
+            <span class="fact-val">自建服务、内网穿透、Minecraft 服务器</span>
+          </li>
+          <li>
+            <span class="fact-key">GitHub</span>
+            <span class="fact-val">
+              <a href="https://github.com/Weiheyi" target="_blank" rel="noopener noreferrer">github.com/Weiheyi</a>
+            </span>
+          </li>
+        </ul>
+
+        <h2>这个博客是怎么搭的</h2>
+        <p>
+          没有用博客框架，也没装任何依赖。就是几个静态文件：
+          HTML 写结构、一份 CSS 管样式、一小段 JavaScript 在浏览器里把
+          Markdown 渲染成文章。加起来不到 30KB，打开就是最终内容。
+        </p>
+        <p>
+          这么做的好处是：放哪都能跑。GitHub Pages、Netlify、自己的服务器，
+          甚至直接双击 <code>index.html</code> 都能看（本地预览需要一个小服务器，
+          因为浏览器禁止从 <code>file://</code> 读文件）。
+        </p>
+        <p>
+          写一篇新文章的流程只有两步：在 <code>posts/</code> 里新建一个
+          <code>.md</code> 文件，再到 <code>posts.json</code> 里加一条记录。
+          没有构建步骤，没有等待。
+        </p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>© 2026 AlexYang</span>
+    <span><a href="index.html">全部文章</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
